@@ -1,4 +1,4 @@
-package com.secure.jobs.services.iml;
+package com.secure.jobs.services.impl;
 
 import com.secure.jobs.dto.admin.UpdateCompanyEnabledResponse;
 import com.secure.jobs.dto.company.CompanyProfileResponse;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class CompanyServiceIml implements CompanyService {
+public class CompanyServiceImpl implements CompanyService {
 
     private final CompanyRepository companyRepository;
     private final CompanyGuard companyGuard;

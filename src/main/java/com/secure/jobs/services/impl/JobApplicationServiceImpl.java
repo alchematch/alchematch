@@ -1,4 +1,4 @@
-package com.secure.jobs.services.iml;
+package com.secure.jobs.services.impl;
 
 import com.secure.jobs.dto.job.JobApplicationPageResponse;
 import com.secure.jobs.dto.job.JobApplicationResponse;

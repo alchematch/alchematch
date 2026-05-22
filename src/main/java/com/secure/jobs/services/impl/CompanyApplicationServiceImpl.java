@@ -1,4 +1,4 @@
-package com.secure.jobs.services.iml;
+package com.secure.jobs.services.impl;
 
 import com.secure.jobs.dto.admin.AdminCompanyApplicationPageResponse;
 import com.secure.jobs.dto.admin.AdminCompanyApplicationResponse;
@@ -298,8 +298,4 @@ public class CompanyApplicationServiceImpl implements CompanyApplicationService 
 
 
 
-
 }
-
-
-

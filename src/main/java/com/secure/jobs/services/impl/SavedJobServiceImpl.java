@@ -1,4 +1,4 @@
-package com.secure.jobs.services.iml;
+package com.secure.jobs.services.impl;
 
 import com.secure.jobs.dto.job.JobPageResponse;
 import com.secure.jobs.dto.job.JobResponse;
@@ -37,7 +37,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class SavedJobServiceIml implements SavedJobService {
+public class SavedJobServiceImpl implements SavedJobService {
 
     private final SavedJobRepository savedJobRepository;
     private final JobRepository jobRepository;

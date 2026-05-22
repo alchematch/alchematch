@@ -1,4 +1,4 @@
-package com.secure.jobs.services.iml;
+package com.secure.jobs.services.impl;
 
 import com.secure.jobs.dto.admin.UpdateUserModerationRequest;
 import com.secure.jobs.dto.admin.UpdateUserModerationResponse;

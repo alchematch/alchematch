@@ -1,4 +1,4 @@
-package com.secure.jobs.services.iml;
+package com.secure.jobs.services.impl;
 
 import com.secure.jobs.dto.profile.CandidateProfileResponse;
 import com.secure.jobs.dto.profile.CandidateProfileResumeUpdateRequest;
@@ -36,7 +36,6 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
 
 
 
-
     private CandidateProfile getOrCreateEntity(Long userId) {
         return candidateProfileRepository.findById(userId).orElseGet(() -> {
             User user = userRepository.findById(userId)
@@ -70,7 +69,7 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
 
         if (userHasActiveApplication && tryingToChangeRestricted) {
             throw new ApiException(
-                    "You can’t change degree/education/experience while you have active applications.",
+                    "You can't change degree/education/experience while you have active applications.",
                     HttpStatus.CONFLICT
             );
         }
@@ -119,4 +118,3 @@ public class CandidateProfileServiceImpl implements CandidateProfileService {
         return CandidateProfileMapper.toResponse(saved);
     }
 }
-
