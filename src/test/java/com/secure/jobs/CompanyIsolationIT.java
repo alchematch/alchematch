@@ -44,8 +44,10 @@ import java.util.List;
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -382,6 +384,62 @@ class CompanyIsolationIT {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.length()").value(0))
                 .andExpect(jsonPath("$.totalElements").value(0));
+    }
+
+    // ── Phase 0.1 guard argument-order bug fixes ────────────────────────────
+
+    @Test
+    void companyOwner_canUpdateOwnJob_returns200() throws Exception {
+        CompanyCtx ctx = companyCtx("UpdateOwn Inc");
+        Job job = newJob(ctx.company());
+
+        mockMvc.perform(
+                        put(BASE_JOB + "/" + job.getId())
+                                .with(ctx.auth())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("{\"title\":\"Updated Title\"}")
+                )
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void companyOwner_cannotUpdateOtherCompanyJob_returns404() throws Exception {
+        CompanyCtx ownerCtx = companyCtx("Owner Inc");
+        CompanyCtx attackerCtx = companyCtx("Attacker Inc");
+        Job ownerJob = newJob(ownerCtx.company());
+
+        mockMvc.perform(
+                        put(BASE_JOB + "/" + ownerJob.getId())
+                                .with(attackerCtx.auth())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("{\"title\":\"Hijacked Title\"}")
+                )
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void companyOwner_canDeleteOwnJob_returns204() throws Exception {
+        CompanyCtx ctx = companyCtx("DeleteOwn Inc");
+        Job job = newJob(ctx.company()); // no applications
+
+        mockMvc.perform(
+                        delete(BASE_JOB + "/" + job.getId())
+                                .with(ctx.auth())
+                )
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void companyOwner_cannotDeleteOtherCompanyJob_returns404() throws Exception {
+        CompanyCtx ownerCtx = companyCtx("Owner2 Inc");
+        CompanyCtx attackerCtx = companyCtx("Attacker2 Inc");
+        Job ownerJob = newJob(ownerCtx.company());
+
+        mockMvc.perform(
+                        delete(BASE_JOB + "/" + ownerJob.getId())
+                                .with(attackerCtx.auth())
+                )
+                .andExpect(status().isNotFound());
     }
 
     @Test

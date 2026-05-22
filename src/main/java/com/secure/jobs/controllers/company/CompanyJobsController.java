@@ -53,9 +53,9 @@ public class CompanyJobsController {
 
     @DeleteMapping("/{jobId}")
     @PreAuthorize("hasRole('COMPANY')")
-    public ResponseEntity<?> deleteJob(@AuthenticationPrincipal UserDetailsImpl user, @PathVariable Long jobId){
+    public ResponseEntity<Void> deleteJob(@AuthenticationPrincipal UserDetailsImpl user, @PathVariable Long jobId){
         jobService.deleteJob(user.getId(), jobId);
-       return ResponseEntity.ok("Job deleted successfully.");
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{jobId}/status")

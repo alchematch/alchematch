@@ -4,15 +4,12 @@ import com.secure.jobs.models.job.EmploymentType;
 import com.secure.jobs.models.job.JobStatus;
 import com.secure.jobs.models.job.PayPeriod;
 import com.secure.jobs.models.job.PayType;
-import com.secure.jobs.models.user.profile.DegreeField;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
 
 public record SavedJobResponse(
-        Long id,
+        Long savedJobId,
+        Long jobId,
         String title,
         String tagline,
         EmploymentType employmentType,

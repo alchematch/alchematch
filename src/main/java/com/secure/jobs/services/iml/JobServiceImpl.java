@@ -60,7 +60,7 @@ public class JobServiceImpl implements JobService {
     @Transactional
     public JobResponse updateJob(Long userId, Long jobId, UpdateJobRequest request) {
 
-        Job job = jobGuard.requireOwnedActiveCompanyJob(userId, jobId);
+        Job job = jobGuard.requireOwnedActiveCompanyJob(jobId, userId);
         jobPayValidator.validateForUpdate(job, request);
         Set<DegreeField> degreeFields = resolveDegreeFields(request.degreeFieldIds());
         JobMapper.updateEntity(job, request, degreeFields);
@@ -71,7 +71,7 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public void deleteJob(Long userId, Long jobId) {
-        Job job = jobGuard.requireOwnedActiveCompanyJob(userId,jobId);
+        Job job = jobGuard.requireOwnedActiveCompanyJob(jobId, userId);
         if(jobApplicationRepository.existsByJob_Id(jobId)){
             throw new ApiException( "Cant delete a job, there are  applications associated with this job, better to disable it",HttpStatus.BAD_REQUEST);
         }

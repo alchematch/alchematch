@@ -8,6 +8,7 @@ public class SavedJobMapper {
     public static SavedJobResponse toResponse(SavedJob savedJob){
 
         return new SavedJobResponse(
+                savedJob.getId(),
                 savedJob.getJob().getId(),
                 savedJob.getJob().getTitle(),
                 savedJob.getJob().getTagline(),
