@@ -31,7 +31,7 @@ public class CandidateProfileController {
     @PreAuthorize("hasRole('USER')")
     public CandidateProfileResponse updateMyProfile(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody CandidateProfileUpdateRequest request
+            @Valid @RequestBody CandidateProfileUpdateRequest request
     ) {
         return candidateProfileService.update(userDetails.getId(), request);
     }
