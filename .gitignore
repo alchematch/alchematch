@@ -37,3 +37,4 @@ build/
 ### Local environment and uploads ###
 .env
 uploads/
+docs/schema-dump-local.sql
