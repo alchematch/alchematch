@@ -35,3 +35,10 @@ export const resetPasswordSchema = z
     path: ["confirmPassword"],
   });
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
+
+
+export const companyApplicationSchema = z.object({
+  companyName: z.string().min(1, "Company name is required").max(150),
+  documentUrl: z.string().min(1, "This field is required").max(500),
+});
+export type CompanyApplicationInput = z.infer<typeof companyApplicationSchema>;
