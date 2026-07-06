@@ -1,0 +1,14 @@
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Application secrets — never commit real credentials
+application.properties
+
+# OS
+.DS_Store
