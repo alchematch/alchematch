@@ -70,7 +70,7 @@ export function NavbarClient({ user }: NavbarClientProps) {
       <div className="hidden md:flex items-center gap-3">
         {user ? (
           <>
-            <Link href="/dashboard" className="text-sm text-muted-foreground hover:text-foreground">
+            <Link href="/profile" className="text-sm text-muted-foreground hover:text-foreground">
               {user.username}
             </Link>
             <Button variant="outline" onClick={handleLogout}>
