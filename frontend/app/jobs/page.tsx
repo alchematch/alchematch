@@ -1,11 +1,10 @@
 import { getPublishedJobs, getPublishedJobById } from "@/lib/jobs";
-import { buildJobsQuery } from "@/lib/utils";
 import { JobList } from "@/components/jobs/JobList";
 import { JobDetailPane } from "@/components/jobs/JobDetailPane";
 import { JobFilters } from "@/components/jobs/JobFilters";
-import Link from "next/link";
-import type { EmploymentType, JobResponse } from "@/lib/types/job";
 import { JobFiltersSidebar } from "@/components/jobs/JobFiltersSidebar";
+import { Pagination } from "@/components/ui/pagination";
+import type { EmploymentType, JobResponse } from "@/lib/types/job";
 
 interface JobsPageProps {
   searchParams: Promise<{
@@ -87,29 +86,12 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
             <JobList jobs={data.content} activeJobId={params.jobId} searchParams={params} />
           </div>
 
-          {data.totalPages > 1 && (
-            <div className="flex items-center justify-center gap-4">
-              {Number(params.page ?? 0) > 0 && (
-                <Link
-                  href={`/jobs?${buildJobsQuery(params, { page: String(Number(params.page ?? 0) - 1) })}`}
-                  className="text-sm text-brass hover:underline"
-                >
-                  ← Previous
-                </Link>
-              )}
-              <span className="text-sm text-muted-foreground">
-                Page {data.pageNumber + 1} of {data.totalPages}
-              </span>
-              {!data.last && (
-                <Link
-                  href={`/jobs?${buildJobsQuery(params, { page: String(Number(params.page ?? 0) + 1) })}`}
-                  className="text-sm text-brass hover:underline"
-                >
-                  Next →
-                </Link>
-              )}
-            </div>
-          )}
+          <Pagination
+            basePath="/jobs"
+            searchParams={params}
+            pageNumber={data.pageNumber}
+            totalPages={data.totalPages}
+          />
         </div>
 
         <div className="h-[calc(100vh-18rem)] overflow-y-auto rounded-lg border border-border bg-card">

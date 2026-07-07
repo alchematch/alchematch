@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getCompanyJobs } from "@/lib/companies";
 import { DeleteJobButton } from "@/components/company/DeleteJobButton";
 import { JobStatusControl } from "@/components/company/JobStatusControl";
+import { Pagination } from "@/components/ui/pagination";
 
 interface CompanyJobsPageProps {
   searchParams: Promise<{ keyword?: string; page?: string }>;
@@ -49,6 +50,15 @@ export default async function CompanyJobsPage({ searchParams }: CompanyJobsPageP
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="mt-6">
+        <Pagination
+          basePath="/company/jobs"
+          searchParams={params}
+          pageNumber={data.pageNumber}
+          totalPages={data.totalPages}
+        />
       </div>
     </div>
   );

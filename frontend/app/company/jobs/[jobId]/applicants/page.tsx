@@ -1,4 +1,5 @@
 import { getCompanyJobApplicants } from "@/lib/companies";
+import { Pagination } from "@/components/ui/pagination";
 
 interface ApplicantsPageProps {
   params: Promise<{ jobId: string }>;
@@ -75,6 +76,15 @@ export default async function JobApplicantsPage({ params, searchParams }: Applic
         {data.content.length === 0 && (
           <p className="py-12 text-center text-muted-foreground">No applicants yet.</p>
         )}
+      </div>
+
+      <div className="mt-6">
+        <Pagination
+          basePath={`/company/jobs/${jobId}/applicants`}
+          searchParams={sp}
+          pageNumber={data.pageNumber}
+          totalPages={data.totalPages}
+        />
       </div>
     </div>
   );

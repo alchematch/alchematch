@@ -1,5 +1,6 @@
 import { getAdminCompanyApplications } from "@/lib/adminCompanyApplications";
 import { CompanyApplicationsTable } from "@/components/admin/CompanyApplicationsTable";
+import { Pagination } from "@/components/ui/pagination";
 
 interface AdminPageProps {
   searchParams: Promise<{ status?: string; keyword?: string; page?: string }>;
@@ -17,6 +18,14 @@ export default async function AdminCompanyApplicationsPage({ searchParams }: Adm
       <p className="mt-2 text-sm text-muted-foreground">{data.totalElements} total</p>
       <div className="mt-6">
         <CompanyApplicationsTable applications={data.content} />
+      </div>
+      <div className="mt-6">
+        <Pagination
+          basePath="/admin"
+          searchParams={params}
+          pageNumber={data.pageNumber}
+          totalPages={data.totalPages}
+        />
       </div>
     </div>
   );
