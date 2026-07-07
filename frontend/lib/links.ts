@@ -1,4 +1,4 @@
 export const navLinks = [
   { label: "Find jobs", href: "/jobs" },
-  { label: "For companies", href: "/for-companies" },
+  { label: "The Formula", href: "/formula", icon: "flask" as const },
 ];

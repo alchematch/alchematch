@@ -6,6 +6,7 @@ import { logout } from "@/lib/auth";
 import { navLinks } from "@/lib/links";
 import { Button } from "@/components/ui/button";
 import { DropdownCustom } from "@/components/ui/dropdown-custom";
+import { FlaskIcon } from "@/components/icons/FlaskIcon";
 
 interface NavbarClientProps {
   user: { username: string; email: string; role?: string } | null;
@@ -47,7 +48,12 @@ export function NavbarClient({ user }: NavbarClientProps) {
           Alche<span className="text-brass">Match</span>
         </Link>
         {navLinks.map((link) => (
-          <Link key={link.href} href={link.href} className="text-sm text-muted-foreground hover:text-foreground">
+          <Link
+            key={link.href}
+            href={link.href}
+            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+          >
+            {link.icon === "flask" && <FlaskIcon className="h-4 w-4 text-brass" />}
             {link.label}
           </Link>
         ))}
