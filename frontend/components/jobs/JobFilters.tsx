@@ -23,7 +23,7 @@ export function JobFilters({
   };
 }) {
   return (
-    <form className="flex flex-col gap-3" action="/jobs">
+    <form className="flex flex-col gap-3 lg:hidden" action="/jobs">
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <input
           type="text"

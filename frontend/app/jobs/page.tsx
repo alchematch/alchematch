@@ -5,6 +5,7 @@ import { JobDetailPane } from "@/components/jobs/JobDetailPane";
 import { JobFilters } from "@/components/jobs/JobFilters";
 import Link from "next/link";
 import type { EmploymentType, JobResponse } from "@/lib/types/job";
+import { JobFiltersSidebar } from "@/components/jobs/JobFiltersSidebar";
 
 interface JobsPageProps {
   searchParams: Promise<{
@@ -67,7 +68,20 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
         {data.totalElements} {data.totalElements === 1 ? "job" : "jobs"} found
       </p>
 
-      <div className="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-[380px_1fr] lg:items-start">
+      <div className="mt-4 lg:grid lg:grid-cols-[260px_380px_1fr] lg:gap-6 lg:items-start">
+        <div className="hidden h-[calc(100vh-14rem)] overflow-y-auto rounded-lg border border-border bg-card p-4 lg:block">
+          <JobFiltersSidebar
+            defaultValues={{
+              keyword: params.keyword,
+              employmentType: params.employmentType,
+              location: params.location,
+              minPay: params.minPay,
+              maxPay: params.maxPay,
+              from: params.from,
+              to: params.to,
+            }}
+          />
+        </div>
         <div className="flex flex-col gap-4">
           <div className="h-[calc(100vh-18rem)] overflow-y-auto rounded-lg border border-border bg-card p-4">
             <JobList jobs={data.content} activeJobId={params.jobId} searchParams={params} />
