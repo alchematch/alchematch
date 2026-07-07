@@ -18,6 +18,7 @@ interface JobPayload {
   location?: string;
   benefits: string[];
   minimumRequirements: string[];
+  degreeFieldIds?: number[];
 }
 
 async function authHeaders() {

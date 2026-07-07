@@ -2,7 +2,7 @@
 
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useState} from "react";
 import { useRouter } from "next/navigation";
 import { jobFormSchema, type JobFormInput } from "@/lib/validations";
 import { createJob, updateJob } from "@/lib/jobActions";
@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { employmentTypeLabels, EmploymentType } from "@/lib/types/job";
+import { DegreeFieldOption } from "@/lib/degreeFields";
 
 const employmentTypes: EmploymentType[] = ["FULL_TIME", "PART_TIME", "CONTRACT", "INTERN", "TEMPORARY", "REMOTE"];
 const payPeriods = ["HOUR", "MONTH", "YEAR"] as const;
@@ -19,9 +20,10 @@ const payTypes = ["SALARY", "HOURLY", "CONTRACT", "COMMISSION"] as const;
 interface JobFormProps {
   jobId?: number;
   defaultValues?: Partial<JobFormInput>;
+  degreeFields: DegreeFieldOption[];
 }
 
-export function JobForm({ jobId, defaultValues }: JobFormProps) {
+export function JobForm({ jobId, defaultValues, degreeFields }: JobFormProps) {
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -36,6 +38,7 @@ export function JobForm({ jobId, defaultValues }: JobFormProps) {
       location: "",
       benefits: "",
       minimumRequirements: "",
+      degreeFieldIds: [],
       ...defaultValues,
     },
   });
@@ -58,6 +61,7 @@ export function JobForm({ jobId, defaultValues }: JobFormProps) {
       minimumRequirements: data.minimumRequirements
         ? data.minimumRequirements.split("\n").map((s) => s.trim()).filter(Boolean)
         : [],
+      degreeFieldIds: data.degreeFieldIds ?? [],
     };
 
     const result = jobId ? await updateJob(jobId, payload) : await createJob(payload);
@@ -218,6 +222,55 @@ export function JobForm({ jobId, defaultValues }: JobFormProps) {
               <FieldLabel htmlFor={field.name}>Location (optional)</FieldLabel>
               <Input {...field} id={field.name} aria-invalid={fieldState.invalid} />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          name="degreeFieldIds"
+          control={form.control}
+          render={({ field }) => (
+            <Field>
+              <FieldLabel htmlFor="degreeFieldIds">
+                Required degree fields (optional)
+              </FieldLabel>
+              <p className="text-xs text-muted-foreground">
+                Leave all unchecked to allow any candidate to apply. Check one or more to
+                restrict applicants to those degree fields.
+              </p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {degreeFields.length === 0 && (
+                  <p className="text-sm text-muted-foreground">No degree fields available yet.</p>
+                )}
+                {degreeFields.map((df) => {
+                  const checked = (field.value ?? []).includes(df.id);
+                  return (
+                    <label
+                      key={df.id}
+                      className={`cursor-pointer rounded-full border px-3 py-1 text-sm ${
+                        checked
+                          ? "border-brass bg-brass/10 text-foreground"
+                          : "border-border text-muted-foreground"
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        className="sr-only"
+                        checked={checked}
+                        onChange={(e) => {
+                          const current = field.value ?? [];
+                          field.onChange(
+                            e.target.checked
+                              ? [...current, df.id]
+                              : current.filter((id: number) => id !== df.id)
+                          );
+                        }}
+                      />
+                      {df.name}
+                    </label>
+                  );
+                })}
+              </div>
             </Field>
           )}
         />

@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { getCompanyJobs } from "@/lib/companies";
+import { getActiveDegreeFields } from "@/lib/degreeFields";
 import { JobForm } from "@/components/company/JobForm";
 
 interface EditJobPageProps {
@@ -9,7 +10,11 @@ interface EditJobPageProps {
 export default async function EditJobPage({ params }: EditJobPageProps) {
   const { jobId } = await params;
 
-  const data = await getCompanyJobs({ page: "0", size: "100" });
+  const [data, degreeFields] = await Promise.all([
+    getCompanyJobs({ page: "0", size: "100" }),
+    getActiveDegreeFields(),
+  ]);
+
   const job = data.content.find((j) => String(j.id) === jobId);
 
   if (!job) {
@@ -22,6 +27,7 @@ export default async function EditJobPage({ params }: EditJobPageProps) {
       <div className="mt-8 max-w-xl rounded-lg border border-border bg-card p-6">
         <JobForm
           jobId={job.id}
+          degreeFields={degreeFields}
           defaultValues={{
             title: job.title,
             description: job.description,
