@@ -8,11 +8,18 @@ import { Button } from "@/components/ui/button";
 import { DropdownCustom } from "@/components/ui/dropdown-custom";
 
 interface NavbarClientProps {
-  user: { username: string; email: string } | null;
+  user: { username: string; email: string; role?: string } | null;
+}
+
+function dashboardHref(role?: string) {
+  if (role === "ROLE_COMPANY") return "/company";
+  if (role === "ROLE_SUPER_ADMIN" || role === "ROLE_ADMIN") return "/admin";
+  return "/profile";
 }
 
 export function NavbarClient({ user }: NavbarClientProps) {
   const router = useRouter();
+  const href = dashboardHref(user?.role);
 
   async function handleLogout() {
     await logout();
@@ -21,21 +28,11 @@ export function NavbarClient({ user }: NavbarClientProps) {
   }
 
   const mobileItems = [
-    ...navLinks.map((link) => ({
-      label: link.label,
-      href: link.href,
-    })),
+    ...navLinks.map((link) => ({ label: link.label, href: link.href })),
     ...(user
       ? [
-          {
-            label: "Dashboard",
-            href: "/dashboard",
-          },
-          {
-            label: "Log out",
-            onClick: handleLogout,
-            variant: "destructive" as const,
-          },
+          { label: "Dashboard", href },
+          { label: "Log out", onClick: handleLogout, variant: "destructive" as const },
         ]
       : [
           { label: "Log in", href: "/login" },
@@ -45,32 +42,25 @@ export function NavbarClient({ user }: NavbarClientProps) {
 
   return (
     <nav className="sticky top-0 z-50 flex items-center justify-between border-b bg-background px-6 py-3">
-      {/* Left group — logo + nav links together */}
       <div className="hidden md:flex items-center gap-6">
         <Link href="/" className="font-heading font-semibold">
           Alche<span className="text-brass">Match</span>
         </Link>
         {navLinks.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            className="text-sm text-muted-foreground hover:text-foreground"
-          >
+          <Link key={link.href} href={link.href} className="text-sm text-muted-foreground hover:text-foreground">
             {link.label}
           </Link>
         ))}
       </div>
 
-      {/* Mobile logo — only visible on mobile */}
       <Link href="/" className="font-heading font-semibold md:hidden">
         Alche<span className="text-brass">Match</span>
       </Link>
 
-      {/* Desktop auth — right side */}
       <div className="hidden md:flex items-center gap-3">
         {user ? (
           <>
-            <Link href="/profile" className="text-sm text-muted-foreground hover:text-foreground">
+            <Link href={href} className="text-sm text-muted-foreground hover:text-foreground">
               {user.username}
             </Link>
             <Button variant="outline" onClick={handleLogout}>
@@ -89,7 +79,6 @@ export function NavbarClient({ user }: NavbarClientProps) {
         )}
       </div>
 
-      {/* Mobile hamburger */}
       <div className="flex md:hidden">
         <DropdownCustom
           trigger={
