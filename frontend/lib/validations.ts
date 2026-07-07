@@ -56,5 +56,32 @@ export const jobFormSchema = z.object({
   location: z.string().max(255).optional(),
   benefits: z.string().optional(),
   minimumRequirements: z.string().optional(),
+  degreeFieldIds: z.array(z.number()).optional(),
 });
-export type JobFormInput = z.infer<typeof jobFormSchema>;
+
+export const candidateProfileSchema = z.object({
+  educationLevel: z
+    .enum(["HIGH_SCHOOL", "ASSOCIATE", "BACHELORS", "MASTERS", "DOCTORATE", "OTHER"])
+    .optional(),
+  degreeFieldId: z.coerce.number().optional(),
+  yearsExperience: z.coerce
+    .number()
+    .min(0, "yearsExperience must be 0 or greater")
+    .optional(),
+  phone: z.string().max(30, "phone must be 30 characters or fewer").optional(),
+  location: z.string().max(120, "location must be 120 characters or fewer").optional(),
+});
+export type CandidateProfileInput = z.infer<typeof candidateProfileSchema>;
+
+export const resumeUrlSchema = z.object({
+  resumeUrl: z
+    .string()
+    .min(1, "Resume link is required")
+    .max(500, "resumeUrl must be 500 characters or fewer"),
+});
+export type ResumeUrlInput = z.infer<typeof resumeUrlSchema>;
+
+export const degreeFieldSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+});
+export type DegreeFieldInput = z.infer<typeof degreeFieldSchema>;
