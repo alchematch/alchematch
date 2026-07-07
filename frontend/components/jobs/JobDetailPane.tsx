@@ -1,4 +1,8 @@
+import Link from "next/link";
 import { JobResponse, employmentTypeLabels } from "@/lib/types/job";
+import { getCurrentUser } from "@/lib/auth";
+import { ApplyButton } from "@/components/jobs/ApplyButton";
+import { hasAppliedToJob } from "@/lib/jobs";
 
 function formatPay(job: JobResponse) {
   if (!job.payMin && !job.payMax) return null;
@@ -10,7 +14,7 @@ function formatPay(job: JobResponse) {
   return `Up to ${fmt(job.payMax!)}${period}`;
 }
 
-export function JobDetailPane({ job }: { job: JobResponse | null }) {
+export async function JobDetailPane({ job }: { job: JobResponse | null }) {
   if (!job) {
     return (
       <div className="flex h-full items-center justify-center text-muted-foreground">
@@ -19,6 +23,8 @@ export function JobDetailPane({ job }: { job: JobResponse | null }) {
     );
   }
 
+  const user = await getCurrentUser();
+  const alreadyApplied = user?.role === "ROLE_USER" ? await hasAppliedToJob(job.id) : false;
   const pay = formatPay(job);
 
   return (
@@ -35,6 +41,20 @@ export function JobDetailPane({ job }: { job: JobResponse | null }) {
       </p>
 
       {pay && <p className="mt-3 font-mono text-lg text-verdigris">{pay}</p>}
+
+      <div className="mt-6">
+        {!user && (
+          <Link
+            href="/login"
+            className="inline-block rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
+          >
+            Log in to apply
+          </Link>
+        )}
+        {user && user.role === "ROLE_USER" && (
+          <ApplyButton key={job.id} jobId={job.id} alreadyApplied={alreadyApplied} />
+        )}
+      </div>
 
       {job.tagline && <p className="mt-4 text-foreground">{job.tagline}</p>}
 

@@ -1,4 +1,5 @@
 import { JobPageResponse, JobResponse, JobSearchParams } from "./types/job";
+import { cookies } from "next/headers";
 
 const BACKEND_URL = process.env.BACKEND_URL;
 
@@ -38,5 +39,19 @@ export async function getPublishedJobById(jobId: number): Promise<JobResponse> {
     throw new Error("Job not found");
   }
 
+  return res.json();
+}
+
+export async function hasAppliedToJob(jobId: number): Promise<boolean> {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get("access_token")?.value;
+  if (!accessToken) return false;
+
+  const res = await fetch(`${BACKEND_URL}/api/jobs/${jobId}/applied`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+    cache: "no-store",
+  });
+
+  if (!res.ok) return false;
   return res.json();
 }
