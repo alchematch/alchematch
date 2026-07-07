@@ -42,3 +42,19 @@ export const companyApplicationSchema = z.object({
   documentUrl: z.string().min(1, "This field is required").max(500),
 });
 export type CompanyApplicationInput = z.infer<typeof companyApplicationSchema>;
+
+export const jobFormSchema = z.object({
+  title: z.string().min(1, "Title is required").max(255),
+  description: z.string().min(1, "Description is required").max(10000),
+  employmentType: z.enum(["FULL_TIME", "PART_TIME", "CONTRACT", "INTERN", "TEMPORARY", "REMOTE"]),
+  tagline: z.string().max(255).optional(),
+  level: z.string().max(255).optional(),
+  payMin: z.coerce.number().min(0).optional(),
+  payMax: z.coerce.number().min(0).optional(),
+  payPeriod: z.enum(["HOUR", "MONTH", "YEAR"]).optional(),
+  payType: z.enum(["SALARY", "HOURLY", "CONTRACT", "COMMISSION"]).optional(),
+  location: z.string().max(255).optional(),
+  benefits: z.string().optional(),
+  minimumRequirements: z.string().optional(),
+});
+export type JobFormInput = z.infer<typeof jobFormSchema>;
