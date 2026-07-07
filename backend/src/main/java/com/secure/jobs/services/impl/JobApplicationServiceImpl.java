@@ -80,6 +80,13 @@ public class JobApplicationServiceImpl  implements JobApplicationService {
         return JobApplicationMapper.toResponse(saved);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public boolean hasApplied(Long userId, Long jobId) {
+        return jobApplicationRepository.existsByJob_IdAndUser_UserId(jobId, userId);
+    }
+
+
 
     @Override
     @Transactional(readOnly = true)

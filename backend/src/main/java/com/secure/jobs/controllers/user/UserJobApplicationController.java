@@ -69,6 +69,15 @@ public class UserJobApplicationController {
         );
     }
 
+    @GetMapping("/jobs/{jobId}/applied")
+    @PreAuthorize("hasRole('USER')")
+        public boolean hasApplied(
+             @AuthenticationPrincipal UserDetailsImpl user,
+             @PathVariable Long jobId
+     ) {
+    return jobApplicationService.hasApplied(user.getId(), jobId);
+}
+
     @PatchMapping("/job-applications/{applicationId}/withdraw")
     @PreAuthorize("hasRole('USER')")
     public WithdrawJobApplicationResponse withdrawMyJobApplication(

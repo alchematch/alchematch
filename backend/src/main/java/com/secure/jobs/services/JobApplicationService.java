@@ -14,6 +14,8 @@ import java.time.LocalDate;
 public interface JobApplicationService {
     JobApplicationResponse apply(Long userId, Long jobId);
 
+    boolean hasApplied(Long userId, Long jobId);
+
     JobApplicationPageResponse getMyApplications(Long userId, Pageable pageable, String keyword, JobApplicationStatus status, LocalDate from, LocalDate to);
 
     JobApplication updateJobApplicationStatus(Long id, Long applicationId, @NotNull JobApplicationStatus status);
