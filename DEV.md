@@ -1,9 +1,9 @@
 ## Running servers
 
-**Terminal 1 — backend:**
-## mySql
-sudo service mysql start
-sudo service mysql status
+**Terminal 1 — DB:**
+## PostgreSQL
+sudo service postgresql start
+sudo service postgresql status
 
 **Terminal 2 — backend:**
 cd backend && ./mvnw spring-boot:run
