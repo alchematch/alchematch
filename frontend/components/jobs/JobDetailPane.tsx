@@ -3,6 +3,8 @@ import { JobResponse, employmentTypeLabels } from "@/lib/types/job";
 import { getCurrentUser } from "@/lib/auth";
 import { ApplyButton } from "@/components/jobs/ApplyButton";
 import { hasAppliedToJob } from "@/lib/jobs";
+import { isJobSaved } from "@/lib/savedJobs";
+import { SaveJobButton } from "@/components/jobs/SaveJobButton";
 
 function formatPay(job: JobResponse) {
   if (!job.payMin && !job.payMax) return null;
@@ -25,6 +27,7 @@ export async function JobDetailPane({ job }: { job: JobResponse | null }) {
 
   const user = await getCurrentUser();
   const alreadyApplied = user?.role === "ROLE_USER" ? await hasAppliedToJob(job.id) : false;
+  const alreadySaved = user?.role === "ROLE_USER" ? await isJobSaved(job.id) : false;
   const pay = formatPay(job);
 
   return (
@@ -52,7 +55,10 @@ export async function JobDetailPane({ job }: { job: JobResponse | null }) {
           </Link>
         )}
         {user && user.role === "ROLE_USER" && (
-          <ApplyButton key={job.id} jobId={job.id} alreadyApplied={alreadyApplied} />
+          <div className="flex items-center gap-3">
+            <ApplyButton key={job.id} jobId={job.id} alreadyApplied={alreadyApplied} />
+            <SaveJobButton key={`save-${job.id}`} jobId={job.id} alreadySaved={alreadySaved} />
+          </div>
         )}
       </div>
 
