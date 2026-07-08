@@ -19,6 +19,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.secure.jobs.dto.admin.AdminUserPageResponse;
+import com.secure.jobs.dto.admin.AdminUserResponse;
+import com.secure.jobs.models.user.auth.AppRole;
+import com.secure.jobs.specifications.AdminUserSpecifications;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import java.time.LocalDate;
+import java.util.List;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -92,6 +101,40 @@ public class UserServiceImpl implements UserService {
             emailService.sendPasswordResetEmail(user.getEmail(), resetUrl);
         });
     }
+
+    @Override
+@Transactional(readOnly = true)
+public AdminUserPageResponse searchUsers(
+        Pageable pageable,
+        String keyword,
+        AppRole role,
+        LocalDate from,
+        LocalDate to
+) {
+    Specification<User> spec =
+            Specification.where(AdminUserSpecifications.keyword(keyword))
+                    .and(AdminUserSpecifications.createdBetween(from, to));
+
+    if (role != null) {
+        spec = spec.and(AdminUserSpecifications.hasRole(role));
+    }
+
+    Page<User> page = userRepository.findAll(spec, pageable);
+
+    List<AdminUserResponse> users = page.getContent()
+            .stream()
+            .map(AdminModerationMapper::toAdminUserResponse)
+            .toList();
+
+    return new AdminUserPageResponse(
+            users,
+            page.getNumber(),
+            page.getSize(),
+            page.getTotalElements(),
+            page.getTotalPages(),
+            page.isLast()
+    );
+}
 
     @Override
     @Transactional

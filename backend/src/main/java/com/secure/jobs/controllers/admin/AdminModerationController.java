@@ -14,6 +14,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import com.secure.jobs.dto.admin.AdminUserPageResponse;
+import com.secure.jobs.models.user.auth.AppRole;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -39,5 +47,25 @@ public class AdminModerationController {
             ){
         return companyService.setEnabled(companyId, request.getEnabled());
     }
+
+    @GetMapping("/users")
+public AdminUserPageResponse listUsers(
+        @PageableDefault(page = 0, size = 20) Pageable pageable,
+        @RequestParam(required = false) String keyword,
+        @RequestParam(required = false) AppRole role,
+        @RequestParam(required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        LocalDate from,
+        @RequestParam(required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        LocalDate to
+) {
+    Pageable locked = PageRequest.of(
+            pageable.getPageNumber(),
+            pageable.getPageSize(),
+            Sort.by(Sort.Direction.DESC, "createdDate")
+    );
+    return userService.searchUsers(locked, keyword, role, from, to);
+}
 
 }
