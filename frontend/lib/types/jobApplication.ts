@@ -8,3 +8,12 @@ export interface JobApplicationResponse {
   status: JobApplicationStatus;
   appliedAt: string;
 }
+
+export interface JobApplicationPageResponse {
+  content: JobApplicationResponse[];
+  pageNumber: number;
+  pageSize: number;
+  totalElements: number;
+  totalPages: number;
+  last: boolean;
+}
