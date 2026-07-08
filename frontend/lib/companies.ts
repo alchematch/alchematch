@@ -39,9 +39,11 @@ export async function getCompanyJobs(params: {
 
 export async function getCompanyJobApplicants(
   jobId: number,
-  params: { page?: string }
+  params: { keyword?: string; status?: string; page?: string }
 ): Promise<CompanyJobApplicationPageResponse> {
   const query = new URLSearchParams();
+  if (params.keyword) query.set("keyword", params.keyword);
+  if (params.status) query.set("status", params.status);
   query.set("page", params.page ?? "0");
   query.set("size", "10");
 

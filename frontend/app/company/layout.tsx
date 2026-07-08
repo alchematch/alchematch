@@ -4,6 +4,7 @@ import { DashboardShell } from "@/components/dashboard/DashboardShell";
 const tabs = [
   { label: "Company profile", href: "/company" },
   { label: "My job listings", href: "/company/jobs" },
+  { label: "Applications", href: "/company/applications" },
   { label: "Post a job", href: "/company/jobs/new" },
 ];
 

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getCompanyJobs } from "@/lib/companies";
 import { DeleteJobButton } from "@/components/company/DeleteJobButton";
 import { JobStatusControl } from "@/components/company/JobStatusControl";
+import { JobsFilter } from "@/components/company/JobsFilter";
 import { Pagination } from "@/components/ui/pagination";
 
 interface CompanyJobsPageProps {
@@ -24,10 +25,14 @@ export default async function CompanyJobsPage({ searchParams }: CompanyJobsPageP
         </Link>
       </div>
 
-      <div className="mt-8 flex flex-col gap-3">
+      <div className="mt-6">
+        <JobsFilter defaultValues={{ keyword: params.keyword }} />
+      </div>
+
+      <div className="mt-6 flex flex-col gap-3">
         {data.content.length === 0 && (
           <p className="py-12 text-center text-muted-foreground">
-            You haven&apos;t posted any jobs yet.
+            No jobs match your search.
           </p>
         )}
         {data.content.map((job) => (
