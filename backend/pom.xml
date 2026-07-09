@@ -30,6 +30,18 @@
 		<java.version>17</java.version>
 	</properties>
 
+	<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>bom</artifactId>
+            <version>2.46.6</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+
 	<dependencies>
 		<!-- Web / MVC -->
 		<dependency>
@@ -43,7 +55,12 @@
 			<scope>test</scope>
 		</dependency>
 
-
+		<!-- Cloudflare R2 (S3-compatible) -->
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>s3</artifactId>
+		</dependency>
+		
 		<!-- Validation -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

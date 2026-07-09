@@ -36,16 +36,14 @@ export async function updateCandidateProfile(data: ProfileUpdatePayload) {
   return { success: true };
 }
 
-export async function updateResume(resumeUrl: string) {
-  // resumePublicId is an internal reference for the file-storage provider
-  // (Cloudinary/R2 style). Real upload isn't wired up yet, so we generate
-  // a placeholder here — same pattern used for the company application doc.
-  const resumePublicId = `manual-${Date.now()}`;
+export async function updateResume(resumeUrl: string, resumePublicId?: string) {
+  // If no real publicId is passed (e.g. any legacy caller), fall back to a placeholder.
+  const finalPublicId = resumePublicId ?? `manual-${Date.now()}`;
 
   const res = await fetch(`${BACKEND_URL}/api/users/me/profile/resume`, {
     method: "PUT",
     headers: { "Content-Type": "application/json", ...(await authHeaders()) },
-    body: JSON.stringify({ resumeUrl, resumePublicId }),
+    body: JSON.stringify({ resumeUrl, resumePublicId: finalPublicId }),
   });
 
   if (!res.ok) {
