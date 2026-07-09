@@ -4,6 +4,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState} from "react";
 import { useRouter } from "next/navigation";
+import * as z from "zod";
 import { jobFormSchema, type JobFormInput } from "@/lib/validations";
 import { createJob, updateJob } from "@/lib/jobActions";
 import { Field, FieldLabel, FieldError, FieldGroup } from "@/components/ui/field";
@@ -27,7 +28,7 @@ export function JobForm({ jobId, defaultValues, degreeFields }: JobFormProps) {
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
 
-  const form = useForm({
+  const form = useForm<z.input<typeof jobFormSchema>, any, z.output<typeof jobFormSchema>>({
     resolver: zodResolver(jobFormSchema),
     defaultValues: {
       title: "",
