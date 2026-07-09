@@ -25,7 +25,7 @@ export async function submitCompanyApplicationForm(data: CompanyApplicationFormD
   if (!accessToken) return { error: "You must be logged in." };
 
   // 1. Render the form data into a PDF, in memory
-  const pdfBuffer = await renderToBuffer(
+const pdfBuffer = await renderToBuffer(
     createElement(CompanyApplicationDocument, {
       ...data,
       submittedAt: new Date().toLocaleDateString("en-US", {
@@ -33,7 +33,7 @@ export async function submitCompanyApplicationForm(data: CompanyApplicationFormD
         month: "long",
         day: "numeric",
       }),
-    })
+    }) as any
   );
 
   // 2. Ask the backend for a presigned upload URL
@@ -61,7 +61,7 @@ export async function submitCompanyApplicationForm(data: CompanyApplicationFormD
   const uploadRes = await fetch(uploadUrl, {
     method: "PUT",
     headers: { "Content-Type": "application/pdf" },
-    body: pdfBuffer,
+    body: pdfBuffer as any,
   });
 
   if (!uploadRes.ok) {
@@ -72,7 +72,7 @@ export async function submitCompanyApplicationForm(data: CompanyApplicationFormD
   return applyForCompany(data.companyName, publicUrl, objectKey);
 }
 
-async function authHeaders() {
+async function authHeaders(): Promise<Record<string, string>> {
   const cookieStore = await cookies();
   const accessToken = cookieStore.get("access_token")?.value;
   return accessToken ? { Authorization: `Bearer ${accessToken}` } : {};

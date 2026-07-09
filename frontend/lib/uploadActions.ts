@@ -12,7 +12,7 @@ interface PresignedUploadResponse {
   expiresInSeconds: number;
 }
 
-async function authHeaders() {
+async function authHeaders(): Promise<Record<string, string>> {
   const cookieStore = await cookies();
   const accessToken = cookieStore.get("access_token")?.value;
   return accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
