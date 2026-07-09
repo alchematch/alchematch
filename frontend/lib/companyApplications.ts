@@ -1,19 +1,21 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
 import { CompanyApplicationResponse } from "./types/user";
 
 const BACKEND_URL = process.env.BACKEND_URL;
 
-export async function applyForCompany(companyName: string, documentUrl: string) {
+export async function applyForCompany(
+  companyName: string,
+  documentUrl: string,
+  documentPublicId?: string
+) {
   const cookieStore = await cookies();
   const accessToken = cookieStore.get("access_token")?.value;
   if (!accessToken) return { error: "You must be logged in." };
 
-  // documentPublicId is an internal reference for the file-storage provider
-  // (e.g. Cloudinary's public ID). Real upload isn't wired up yet, so we
-  // generate a placeholder here instead of asking the user to type one.
-  const documentPublicId = `manual-${Date.now()}`;
+  const finalPublicId = documentPublicId ?? `manual-${Date.now()}`;
 
   const res = await fetch(`${BACKEND_URL}/api/company-applications`, {
     method: "POST",
@@ -21,7 +23,7 @@ export async function applyForCompany(companyName: string, documentUrl: string) 
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     },
-    body: JSON.stringify({ companyName, documentPublicId, documentUrl }),
+    body: JSON.stringify({ companyName, documentPublicId: finalPublicId, documentUrl }),
   });
 
   if (!res.ok) {
@@ -29,6 +31,8 @@ export async function applyForCompany(companyName: string, documentUrl: string) 
     return { error: text || "Failed to submit application." };
   }
 
+  revalidatePath("/profile");
+  revalidatePath("/profile/apply-company");
   return { success: true };
 }
 
