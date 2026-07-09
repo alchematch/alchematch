@@ -27,7 +27,7 @@ export function JobForm({ jobId, defaultValues, degreeFields }: JobFormProps) {
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
 
-  const form = useForm<JobFormInput>({
+  const form = useForm({
     resolver: zodResolver(jobFormSchema),
     defaultValues: {
       title: "",
