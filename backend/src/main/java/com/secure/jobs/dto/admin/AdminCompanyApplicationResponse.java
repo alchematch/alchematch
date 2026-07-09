@@ -13,6 +13,6 @@ public record AdminCompanyApplicationResponse(
         String documentUrl,
         String companyName,
         CompanyApplicationStatus status,
-        LocalDateTime appliedAt
-) {
-}
+        LocalDateTime appliedAt,
+        String rejectionReason
+) {}

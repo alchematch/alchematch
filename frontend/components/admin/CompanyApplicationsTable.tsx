@@ -1,11 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { MoreVertical } from "lucide-react";
 import { DropdownCustom } from "@/components/ui/dropdown-custom";
 import { Button } from "@/components/ui/button";
 import { approveCompanyApplication, rejectCompanyApplication } from "@/lib/companyApplicationActions";
 import { AdminCompanyApplicationResponse } from "@/lib/types/company";
+import { RejectApplicationDialog } from "./RejectApplicationDialog";
 
 export function CompanyApplicationsTable({
   applications,
@@ -13,14 +15,17 @@ export function CompanyApplicationsTable({
   applications: AdminCompanyApplicationResponse[];
 }) {
   const router = useRouter();
+  const [rejectingId, setRejectingId] = useState<number | null>(null);
 
   async function handleApprove(id: number) {
     const result = await approveCompanyApplication(id);
     if (!result.error) router.refresh();
   }
 
-  async function handleReject(id: number) {
-    const result = await rejectCompanyApplication(id);
+  async function handleConfirmReject(reason: string) {
+    if (rejectingId === null) return;
+    const result = await rejectCompanyApplication(rejectingId, reason);
+    setRejectingId(null);
     if (!result.error) router.refresh();
   }
 
@@ -61,13 +66,18 @@ export function CompanyApplicationsTable({
                   }
                   items={[
                     { label: "Approve", onClick: () => handleApprove(app.applicationId) },
-                    { label: "Reject", onClick: () => handleReject(app.applicationId), variant: "destructive" },
+                    { label: "Reject", onClick: () => setRejectingId(app.applicationId), variant: "destructive" },
                   ]}
                   align="right"
                 />
               )}
             </div>
           </div>
+
+          {app.status === "REJECTED" && app.rejectionReason && (
+            <p className="mt-3 text-sm text-cinnabar">Reason: {app.rejectionReason}</p>
+          )}
+
           <a
             href={app.documentUrl}
             target="_blank"
@@ -78,6 +88,13 @@ export function CompanyApplicationsTable({
           </a>
         </div>
       ))}
+
+      {rejectingId !== null && (
+        <RejectApplicationDialog
+          onCancel={() => setRejectingId(null)}
+          onConfirm={handleConfirmReject}
+        />
+      )}
     </div>
   );
 }

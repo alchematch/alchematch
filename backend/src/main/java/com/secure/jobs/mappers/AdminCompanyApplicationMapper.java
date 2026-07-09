@@ -14,8 +14,8 @@ public class AdminCompanyApplicationMapper {
                 app.getDocumentUrl(),
                 app.getCompanyName(),
                 app.getStatus(),
-                app.getCreatedAt()
+                app.getCreatedAt(),
+                app.getRejectionReason()
         );
-
     }
 }

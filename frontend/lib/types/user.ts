@@ -24,4 +24,5 @@ export interface CompanyApplicationResponse {
   status: string;
   documentUrl: string;
   createdDate: string;
+  rejectionReason: string | null;
 }

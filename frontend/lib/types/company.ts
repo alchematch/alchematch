@@ -17,6 +17,7 @@ export interface AdminCompanyApplicationResponse {
   companyName: string;
   status: CompanyApplicationStatus;
   appliedAt: string;
+  rejectionReason: string | null;
 }
 
 export interface AdminCompanyApplicationPageResponse {

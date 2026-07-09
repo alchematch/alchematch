@@ -68,4 +68,8 @@ public class CompanyApplication {
     public int hashCode() {
         return getClass().hashCode();
     }
+
+    @Column(name = "rejection_reason", length = 1000)
+    private String rejectionReason;
+
 }

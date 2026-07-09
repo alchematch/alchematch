@@ -7,6 +7,6 @@ public record CompanyApplicationResponse(
         String companyName,
         String status,
         String documentUrl,
-        LocalDateTime createdDate
-) {
-}
+        LocalDateTime createdDate,
+        String rejectionReason
+) {}

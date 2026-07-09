@@ -11,11 +11,12 @@ public class CompanyApplicationMapper {
             CompanyApplication application
     ) {
         return new CompanyApplicationResponse(
-                application.getId(),
-                application.getCompanyName(),
-                application.getStatus().name(),
-                application.getDocumentUrl(),
-                application.getCreatedAt()
-        );
+        application.getId(),
+        application.getCompanyName(),
+        application.getStatus().name(),
+        application.getDocumentUrl(),
+        application.getCreatedAt(),
+        application.getRejectionReason()
+    );
     }
 }

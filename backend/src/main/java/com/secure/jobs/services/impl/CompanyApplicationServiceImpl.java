@@ -76,6 +76,7 @@ public class CompanyApplicationServiceImpl implements CompanyApplicationService 
             existing.setDocumentPublicId(documentPublicId);
             existing.setDocumentUrl(documentUrl);
             existing.setStatus(CompanyApplicationStatus.PENDING);
+            existing.setRejectionReason(null);
             CompanyApplication saved = companyApplicationRepository.save(existing);
             return CompanyApplicationMapper.toResponse(saved);
         }
@@ -137,16 +138,17 @@ public class CompanyApplicationServiceImpl implements CompanyApplicationService 
                 .orElseThrow(() -> new ResourceNotFoundException("Company application not found"));
 
         if (application.getStatus() != CompanyApplicationStatus.PENDING) {
-            throw new BadRequestException(
-                    "Only pending applications can be rejected");
+                throw new BadRequestException(
+                        "Only pending applications can be rejected");
         }
 
         application.setStatus(CompanyApplicationStatus.REJECTED);
+        application.setRejectionReason(reason);
 
         companyApplicationRepository.save(application);
 
         return CompanyApplicationMapper.toResponse(application);
-    }
+        }
 
     @Override
     @Transactional(readOnly = true)

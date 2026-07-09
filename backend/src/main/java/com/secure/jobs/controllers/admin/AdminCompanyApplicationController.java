@@ -15,6 +15,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import com.secure.jobs.dto.admin.RejectCompanyApplicationRequest;
 
 import java.time.LocalDate;
 
@@ -63,8 +64,12 @@ public class AdminCompanyApplicationController {
 
     @PostMapping("/{id}/reject")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
-    public CompanyApplicationResponse reject(@PathVariable Long id) {
-        return companyApplicationService.reject(id, null);
+    public CompanyApplicationResponse reject(
+            @PathVariable Long id,
+            @RequestBody(required = false) RejectCompanyApplicationRequest request
+    ) {
+        String reason = request != null ? request.reason() : null;
+        return companyApplicationService.reject(id, reason);
     }
 
 }

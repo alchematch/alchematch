@@ -1,6 +1,12 @@
-import { UserResponse } from "@/lib/types/user";
+import { UserResponse, CompanyApplicationResponse } from "@/lib/types/user";
 
-export function ProfileOverview({ user }: { user: UserResponse }) {
+export function ProfileOverview({
+  user,
+  companyApplication,
+}: {
+  user: UserResponse;
+  companyApplication: CompanyApplicationResponse | null;
+}) {
   return (
     <div className="flex flex-col gap-6">
       <div className="rounded-lg border border-border bg-card p-6">
@@ -27,9 +33,16 @@ export function ProfileOverview({ user }: { user: UserResponse }) {
           </p>
         )}
         {user.companyApplicationStatus === "REJECTED" && (
-          <p className="mt-2 text-sm text-muted-foreground">
-            Your previous application wasn&apos;t approved. You can apply again from the sidebar.
-          </p>
+          <div className="mt-2">
+            <p className="text-sm text-muted-foreground">
+              Your previous application wasn&apos;t approved. You can apply again from the sidebar.
+            </p>
+            {companyApplication?.rejectionReason && (
+              <p className="mt-2 text-sm text-cinnabar">
+                Reason: {companyApplication.rejectionReason}
+              </p>
+            )}
+          </div>
         )}
         {!user.companyApplicationStatus && (
           <p className="mt-2 text-sm text-muted-foreground">
