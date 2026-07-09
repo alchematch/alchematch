@@ -150,13 +150,13 @@ export function JobForm({ jobId, defaultValues, degreeFields }: JobFormProps) {
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <Controller
+         <Controller
             name="payMin"
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor={field.name}>Min pay (optional)</FieldLabel>
-                <Input {...field} value={field.value ?? ""} id={field.name} type="number" min="0" aria-invalid={fieldState.invalid} />
+                <Input {...field} value={(field.value as number | string | undefined) ?? ""} id={field.name} type="number" min="0" aria-invalid={fieldState.invalid} />
                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -167,7 +167,7 @@ export function JobForm({ jobId, defaultValues, degreeFields }: JobFormProps) {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor={field.name}>Max pay (optional)</FieldLabel>
-                <Input {...field} value={field.value ?? ""} id={field.name} type="number" min="0" aria-invalid={fieldState.invalid} />
+                <Input {...field} value={(field.value as number | string | undefined) ?? ""} id={field.name} type="number" min="0" aria-invalid={fieldState.invalid} />
                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
