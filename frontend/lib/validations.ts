@@ -58,6 +58,7 @@ export const jobFormSchema = z.object({
   minimumRequirements: z.string().optional(),
   degreeFieldIds: z.array(z.number()).optional(),
 });
+export type JobFormInput = z.infer<typeof jobFormSchema>;
 
 export const candidateProfileSchema = z.object({
   educationLevel: z
