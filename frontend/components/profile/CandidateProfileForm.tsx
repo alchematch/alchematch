@@ -4,6 +4,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import * as z from "zod";
 import { candidateProfileSchema, type CandidateProfileInput } from "@/lib/validations";
 import { updateCandidateProfile } from "@/lib/candidateProfileActions";
 import { Field, FieldLabel, FieldError, FieldGroup } from "@/components/ui/field";
@@ -31,7 +32,7 @@ export function CandidateProfileForm({ degreeFields, defaultValues }: CandidateP
   const [serverError, setServerError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
-  const form = useForm<CandidateProfileInput>({
+  const form = useForm<z.input<typeof candidateProfileSchema>, any, z.output<typeof candidateProfileSchema>>({
     resolver: zodResolver(candidateProfileSchema),
     defaultValues,
   });
@@ -93,7 +94,7 @@ export function CandidateProfileForm({ degreeFields, defaultValues }: CandidateP
                 <FieldLabel htmlFor={field.name}>Degree field</FieldLabel>
                 <select
                   {...field}
-                  value={field.value ?? ""}
+                  value={(field.value as number | string | undefined) ?? ""}
                   id={field.name}
                   className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brass"
                 >
@@ -118,7 +119,7 @@ export function CandidateProfileForm({ degreeFields, defaultValues }: CandidateP
               <FieldLabel htmlFor={field.name}>Years of experience</FieldLabel>
               <Input
                 {...field}
-                value={field.value ?? ""}
+                value={(field.value as number | string | undefined) ?? ""}
                 id={field.name}
                 type="number"
                 min="0"
