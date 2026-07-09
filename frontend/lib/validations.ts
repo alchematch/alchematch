@@ -85,3 +85,36 @@ export const degreeFieldSchema = z.object({
   name: z.string().min(1, "Name is required"),
 });
 export type DegreeFieldInput = z.infer<typeof degreeFieldSchema>;
+
+export const companyApplicationFormSchema = z.object({
+  companyName: z.string().min(1, "Company name is required").max(150),
+  businessName: z.string().min(1, "Legal business name is required").max(200),
+  licenseNumber: z.string().min(1, "License/registration number is required").max(100),
+  businessAddress: z.string().min(1, "Business address is required").max(300),
+  registrationJurisdiction: z.string().min(1, "Registration jurisdiction is required").max(150),
+  phone: z.string().min(1, "Phone number is required").max(30),
+  isoCertification: z.string().max(150).optional(),
+});
+export type CompanyApplicationFormInput = z.infer<typeof companyApplicationFormSchema>;
+
+export const changeUsernameSchema = z.object({
+  username: z.string().min(1, "Username is required").max(100),
+});
+export type ChangeUsernameInput = z.infer<typeof changeUsernameSchema>;
+
+export const changeEmailSchema = z.object({
+  email: z.string().email("Enter a valid email address").max(50),
+});
+export type ChangeEmailInput = z.infer<typeof changeEmailSchema>;
+
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Current password is required"),
+    newPassword: z.string().min(8, "Password must be at least 8 characters").max(72),
+    confirmNewPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
+    message: "Passwords don't match",
+    path: ["confirmNewPassword"],
+  });
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;

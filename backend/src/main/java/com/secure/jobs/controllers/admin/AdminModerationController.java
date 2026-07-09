@@ -22,6 +22,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
+import com.secure.jobs.security.services.UserDetailsImpl;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -34,10 +36,11 @@ public class AdminModerationController {
 
     @PatchMapping("/users/{userId}/moderation")
     public UpdateUserModerationResponse patchUserModeration(
+            @AuthenticationPrincipal UserDetailsImpl admin,
             @PathVariable Long userId,
             @Valid @RequestBody UpdateUserModerationRequest request
     ){
-        return userService.patchModeration(userId, request);
+        return userService.patchModeration(admin.getId(), userId, request);
     }
 
     @PatchMapping("/companies/{companyId}/enabled")

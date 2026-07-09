@@ -2,6 +2,8 @@ package com.secure.jobs.services.impl;
 
 import com.secure.jobs.dto.admin.UpdateUserModerationRequest;
 import com.secure.jobs.dto.admin.UpdateUserModerationResponse;
+import com.secure.jobs.dto.user.ChangeEmailResponse;
+import com.secure.jobs.dto.user.ChangeUsernameResponse;
 import com.secure.jobs.exceptions.ApiException;
 import com.secure.jobs.exceptions.BadRequestException;
 import com.secure.jobs.exceptions.ResourceNotFoundException;
@@ -10,6 +12,7 @@ import com.secure.jobs.models.user.auth.PasswordResetToken;
 import com.secure.jobs.models.user.auth.User;
 import com.secure.jobs.repositories.PasswordResetTokenRepository;
 import com.secure.jobs.repositories.UserRepository;
+import com.secure.jobs.security.jwt.JwtUtils;
 import com.secure.jobs.security.util.ResetTokenUtil;
 import com.secure.jobs.services.EmailService;
 import com.secure.jobs.services.UserService;
@@ -42,6 +45,8 @@ public class UserServiceImpl implements UserService {
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final JwtUtils jwtUtils;
+    private final com.secure.jobs.security.guards.AdminModerationGuard adminModerationGuard;
 
     @Value("${app.frontend.url:}")
     private String frontendUrl;
@@ -53,25 +58,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UpdateUserModerationResponse patchModeration(Long userId, UpdateUserModerationRequest request) {
-            User user = userRepository.findById(userId)
-                    .orElseThrow(()-> new ResourceNotFoundException("User Not Found"));
-            boolean changed = false;
+public UpdateUserModerationResponse patchModeration(Long actingAdminId, Long userId, UpdateUserModerationRequest request) {
+        adminModerationGuard.requireNotSelf(actingAdminId, userId);
 
-            if(request.getEnabled() != null){
-                user.setEnabled(request.getEnabled());
-                changed = true;
-            }
-        if (request.getAccountNonLocked() != null) {
-            user.setAccountNonLocked(request.getAccountNonLocked());
+        User user = userRepository.findById(userId)
+                .orElseThrow(()-> new ResourceNotFoundException("User Not Found"));
+
+        adminModerationGuard.requireNotAdmin(user);
+
+        boolean changed = false;
+
+        if(request.getEnabled() != null){
+            user.setEnabled(request.getEnabled());
             changed = true;
         }
-        if (!changed) {
-            throw new ApiException("No moderation fields provided", HttpStatus.BAD_REQUEST);
-        }
-        return AdminModerationMapper.toUserModerationResponse(user);
+    if (request.getAccountNonLocked() != null) {
+        user.setAccountNonLocked(request.getAccountNonLocked());
+        changed = true;
     }
-
+    if (!changed) {
+        throw new ApiException("No moderation fields provided", HttpStatus.BAD_REQUEST);
+    }
+    return AdminModerationMapper.toUserModerationResponse(user);
+}
 
 
     @Override
@@ -166,5 +175,55 @@ public AdminUserPageResponse searchUsers(
 
         // optional cleanup: delete expired tokens
         passwordResetTokenRepository.deleteByExpiresAtBefore(Instant.now());
+    }
+
+    @Override
+    @Transactional
+    public ChangeUsernameResponse changeUsername(Long userId, String newUsername) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (!newUsername.equals(user.getUsername()) && userRepository.existsByUsername(newUsername)) {
+            throw new BadRequestException("Username is already taken");
+        }
+
+        user.setUsername(newUsername);
+        userRepository.save(user);
+
+        // JWT subject is the username — issue a fresh token so the current
+        // session isn't invalidated by the change.
+        String newToken = jwtUtils.generateToken(newUsername);
+
+        return new ChangeUsernameResponse(newUsername, newToken);
+    }
+
+    @Override
+    @Transactional
+    public ChangeEmailResponse changeEmail(Long userId, String newEmail) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (!newEmail.equals(user.getEmail()) && userRepository.existsByEmail(newEmail)) {
+            throw new BadRequestException("Email is already in use");
+        }
+
+        user.setEmail(newEmail);
+        userRepository.save(user);
+
+        return new ChangeEmailResponse(newEmail);
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(Long userId, String currentPassword, String newPassword) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (!passwordEncoder.matches(currentPassword, user.getPasswordHash())) {
+            throw new ApiException("Current password is incorrect", HttpStatus.BAD_REQUEST);
+        }
+
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
     }
 }

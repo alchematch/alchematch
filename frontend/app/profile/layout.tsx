@@ -7,6 +7,7 @@ const tabs = [
   { label: "My applications", href: "/profile/applications" },
   { label: "Saved jobs", href: "/profile/saved-jobs" },
   { label: "Apply to become a company", href: "/profile/apply-company" },
+  { label: "Account settings", href: "/profile/settings" },
 ];
 
 export default async function ProfileLayout({
@@ -14,9 +15,6 @@ export default async function ProfileLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Candidate-only dashboard. Company and admin roles get their own
-  // dashboards (/company, /admin) later, reusing this same DashboardShell
-  // with a different tab list — the shell itself is role-agnostic.
   await requireRole("ROLE_USER");
 
   return <DashboardShell tabs={tabs}>{children}</DashboardShell>;

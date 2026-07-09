@@ -6,6 +6,7 @@ const tabs = [
   { label: "My job listings", href: "/company/jobs" },
   { label: "Applications", href: "/company/applications" },
   { label: "Post a job", href: "/company/jobs/new" },
+  { label: "Account settings", href: "/company/settings" },
 ];
 
 export default async function CompanyLayout({ children }: { children: React.ReactNode }) {

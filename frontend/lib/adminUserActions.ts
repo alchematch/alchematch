@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
+import { parseApiErrorMessage } from "./apiError";
 
 const BACKEND_URL = process.env.BACKEND_URL;
 
@@ -22,8 +23,7 @@ export async function updateUserModeration(
   });
 
   if (!res.ok) {
-    const text = await res.text();
-    return { error: text || "Failed to update user." };
+    return { error: await parseApiErrorMessage(res, "Failed to update user.") };
   }
 
   revalidatePath("/admin/moderation");
