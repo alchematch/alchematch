@@ -4,8 +4,7 @@ import { useRouter } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 import { DropdownCustom } from "@/components/ui/dropdown-custom";
 import { changeJobStatus } from "@/lib/jobActions";
-
-type JobStatus = "DRAFT" | "PUBLISHED" | "CLOSED";
+import type { JobStatus } from "@/lib/types/job";
 
 const statusOptions: { status: JobStatus; label: string }[] = [
   { status: "DRAFT", label: "Set to Draft" },

@@ -17,6 +17,7 @@ export const employmentTypeLabels: Record<EmploymentType, string> = {
 
 export type PayType = "SALARY" | "HOURLY" | "CONTRACT" | "COMMISSION";
 export type PayPeriod = "HOUR" | "MONTH" | "YEAR";
+export type JobStatus = "DRAFT" | "PUBLISHED" | "CLOSED";
 
 export interface JobResponse {
   id: number;
@@ -33,7 +34,7 @@ export interface JobResponse {
   benefits: string[];
   minimumRequirements: string[];
   // degreeFields intentionally omitted — DegreeField entity shape not confirmed yet
-  status: string;
+  status: JobStatus;
   companyName: string;
   createdAt: string;
 }
