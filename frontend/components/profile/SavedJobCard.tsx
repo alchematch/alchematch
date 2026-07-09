@@ -4,7 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { unsaveJob } from "@/lib/savedJobActions";
-import { SavedJobResponse, employmentTypeLabels } from "@/lib/types/job";
+import { SavedJobResponse } from "@/lib/types/savedJob";
+import { employmentTypeLabels } from "@/lib/types/job";
 
 function formatPay(job: SavedJobResponse) {
   if (!job.payMin && !job.payMax) return null;
