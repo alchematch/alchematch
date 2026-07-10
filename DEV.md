@@ -1,39 +1,47 @@
-## Running servers
+# Local Development
 
-**Terminal 1 — DB:**
-## PostgreSQL
+## Prereqs
+PostgreSQL, Java 17 + Maven, Node 20+
+
+## Start everything
+
+**1. Database**
+```bash
 sudo service postgresql start
-sudo service postgresql status
+```
 
-**Terminal 2 — backend:**
+**2. Backend** — port 8080
+```bash
 cd backend && ./mvnw spring-boot:run
+```
+Wait for `Started JobsApplication`.
 
-Wait for `Started JobsApplication`. Runs on port 8080.
-
-**Terminal 3 — frontend:**
+**3. Frontend** — port 3000
+```bash
 cd frontend && npm run dev
+```
 
-Runs on port 3000.
+## Before every push
 
-## Codespaces port forwarding
+```bash
+cd frontend && npm run build
+```
 
-Both ports need to be forwarded and set to **Public** visibility (PORTS tab → right-click → Port Visibility) for the frontend's server-side fetches and any external API testing (Postman, etc.) to reach the backend.
+`next dev` skips full type-checking; `next build` doesn't. Catching errors here takes seconds. Catching them on Vercel takes a lot longer.
+
+## Codespaces
+
+Forward ports 3000 and 8080, set both to **Public** (PORTS tab → right-click → Port Visibility) so frontend server-side fetches and external API testing can reach the backend.
 
 ## Common issues
 
-- **`./mvnw: Permission denied`** → `chmod +x mvnw`
-- **MySQL socket permission denied** → `sudo chmod 755 /var/run/mysqld/`
-- **Backend won't start, `Access denied for user`** → check `application.properties` datasource credentials match what you created in MySQL
-- **Frontend `fetch failed` / `ECONNREFUSED`** → backend isn't running or hasn't finished starting yet
+- `./mvnw: Permission denied` → `chmod +x mvnw`
+- Backend won't start, `Access denied` → check `application.properties` datasource credentials match your local Postgres user
+- Frontend `fetch failed` / `ECONNREFUSED` → backend isn't running yet
 
-Company account (ROLE_COMPANY)
+## Test accounts (local only)
 
-Username: testcompany
-Password: TestPass123!
-Email: testcompany@example.com
-
-Admin account (ROLE_SUPER_ADMIN)
-
-Username: admin
-Password: 12345678
-Email: admin@alchematch.local (double check this against your actual application.properties if it's been a while)
+| Role | Username | Password | Email |
+|---|---|---|---|
+| Company | `testcompany` | `TestPass123!` | testcompany@example.com |
+| Admin | `admin` | `12345678` | admin@alchematch.local |
